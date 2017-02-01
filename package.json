@@ -1,0 +1,28 @@
+{
+  "name": "if-prototype-react",
+  "version": "0.1.0",
+  "homepage": "./",
+  "main": "./build/index.js",
+  "private": true,
+  "devDependencies": {
+    "cross-env": "^3.1.4",
+    "electron": "^1.4.15",
+    "electron-packager": "^8.5.1",
+    "gh-pages": "^0.12.0",
+    "react-scripts": "0.8.5"
+  },
+  "dependencies": {
+    "react": "^15.4.2",
+    "react-dom": "^15.4.2"
+  },
+  "scripts": {
+    "start": "react-scripts start",
+    "build": "react-scripts build",
+    "test": "react-scripts test --env=jsdom",
+    "eject": "react-scripts eject",
+    "electron": "cross-env NODE_ENV=development electron .",
+    "electron-package": "npm run build && electron-packager ./build --out=./dist --asar --overwrite",
+    "electron-package-all": "npm run build && electron-packager ./build --out=./dist --asar --overwrite --all",
+    "deploy": "npm run build && gh-pages -d ./build"
+  }
+}

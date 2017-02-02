@@ -1,5 +1,5 @@
 {
-  "name": "if-prototype-react",
+  "name": "if-prototype-react-electron",
   "version": "0.1.0",
   "homepage": "./",
   "main": "./build/index.js",

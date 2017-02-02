@@ -1,30 +1,38 @@
-// import React from "react";
-// import ReactDOM from "react-dom";
-// import App from "./components/App";
+import React from "react";
+import ReactDOM from "react-dom";
+import { combineReducers, createStore } from "redux";
+import App from "./components/App";
 
-// ReactDOM.render(<App />, document.getElementById("root"));
-
-import { createStore } from "redux";
-
-const reducer = function (state, action) {
+const userReducer = function (state = {}, action) {
   switch (action.type) {
-    case "INC":
-      return state + action.payload;
-    case "DEC":
-      return state - action.payload;
+    case "CHANGE_NAME":
+      return { ...state, name: action.payload };
+
+    case "CHANGE_AGE":
+      return { ...state, age: action.payload };
+
     default:
       return state;
   }
 };
 
-const store = createStore(reducer, 0);
+const tweetsReducer = function (state = [], action) {
+  return state;
+};
+
+const reducers = combineReducers({
+  user: userReducer,
+  tweets: tweetsReducer
+});
+
+const store = createStore(reducers);
 
 store.subscribe(() => {
   console.log("store changed", store.getState());
 });
 
-store.dispatch({ type: "INC", payload: 1 });
-store.dispatch({ type: "INC", payload: 2 });
-store.dispatch({ type: "INC", payload: 22 });
-store.dispatch({ type: "INC", payload: 1 });
-store.dispatch({ type: "DEC", payload: 1000 });
+store.dispatch({ type: "CHANGE_NAME", payload: "Will" });
+store.dispatch({ type: "CHANGE_AGE", payload: 41 });
+store.dispatch({ type: "CHANGE_AGE", payload: 42 });
+
+ReactDOM.render(<App />, document.getElementById("root"));

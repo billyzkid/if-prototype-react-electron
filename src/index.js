@@ -102,7 +102,6 @@ store.dispatch((dispatch) => {
       { name: "Sue", age: 35 }
     ];
   }).then((data) => {
-    throw new Error("Ouch1!");
     dispatch({ type: "FETCH_DATA_FULFILLED", payload: data });
   }).catch((error) => {
     dispatch({ type: "FETCH_DATA_REJECTED", payload: error, error: true });
@@ -114,7 +113,6 @@ store.dispatch((dispatch) => {
   dispatch({
     type: "FETCH_DATA",
     payload: delay(2000).then(() => {
-      throw new Error("Ouch2!");
       return [
         { name: "Bob", age: 40 },
         { name: "Sue", age: 35 }

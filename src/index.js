@@ -2,7 +2,20 @@ import React from "react";
 import ReactDOM from "react-dom";
 import { applyMiddleware, combineReducers, createStore } from "redux";
 import thunk from "redux-thunk";
+import promise from "redux-promise-middleware";
 import App from "./components/App";
+
+function noop() { };
+
+function delay(time) {
+  return new Promise((resolve, reject) => {
+    if (time !== undefined) {
+      setTimeout(resolve, time);
+    } else {
+      setImmediate(resolve);
+    }
+  });
+}
 
 const initialDataState = {
   fetching: false,
@@ -13,13 +26,13 @@ const initialDataState = {
 
 const dataReducer = function (state = initialDataState, action) {
   switch (action.type) {
-    case "FETCH_DATA_START":
+    case "FETCH_DATA_PENDING":
       return { ...state, fetching: true };
 
-    case "FETCH_DATA_COMPLETE":
+    case "FETCH_DATA_FULFILLED":
       return { ...state, fetching: false, fetched: true, users: action.payload };
 
-    case "FETCH_DATA_ERROR":
+    case "FETCH_DATA_REJECTED":
       return { ...state, fetching: false, error: action.payload };
 
     default:
@@ -43,18 +56,15 @@ const userReducer = function (state = {}, action) {
 const tweetsReducer = function (state = [], action) {
   switch (action.type) {
     case "SEND_TWEET":
-      throw new Error("ARGH!!!!!!!")
+      throw new Error("Argh!")
 
     default:
       return state;
   }
 };
 
-const reducers = combineReducers({
-  data: dataReducer,
-  user: userReducer,
-  tweets: tweetsReducer
-});
+const thunkMiddleware = thunk;
+const promiseMiddleware = promise();
 
 const loggerMiddleware = (store) => (next) => (action) => {
   console.log("action fired", action);
@@ -69,32 +79,48 @@ const errorMiddleware = (store) => (next) => (action) => {
   }
 };
 
-const middleware = applyMiddleware(thunk, loggerMiddleware, errorMiddleware);
-const store = createStore(reducers, middleware);
+const reducer = combineReducers({ data: dataReducer, user: userReducer, tweets: tweetsReducer });
+const enhancer = applyMiddleware(thunkMiddleware, promiseMiddleware, loggerMiddleware, errorMiddleware);
+const store = createStore(reducer, enhancer);
 
 store.subscribe(() => {
   console.log("store changed", store.getState());
 });
 
-// asynchronous dispatching (requires custom middleware, e.g. thunk)
-store.dispatch((dispatch) => {
-  dispatch({ type: "FETCH_DATA_START" });
-
-  new Promise((resolve, reject) => {
-    setTimeout(resolve, 2000);
-  }).then(() => {
-    return { fake: true };
-  }).then((data) => {
-    dispatch({ type: "FETCH_DATA_COMPLETE", payload: data });
-  }).catch((error) => {
-    dispatch({ type: "FETCH_DATA_ERROR", payload: error });
-  });
-});
-
-// synchronous dispatching (works out-of-the-box)
+// synchronous action dispatching (works out-of-the-box)
 store.dispatch({ type: "CHANGE_USER_NAME", payload: "Will" });
 store.dispatch({ type: "CHANGE_USER_AGE", payload: 41 });
 store.dispatch({ type: "CHANGE_USER_AGE", payload: 42 });
 store.dispatch({ type: "SEND_TWEET", payload: 42 });
+
+// asynchronous action dispatching option #1 - requires redux-thunk
+store.dispatch((dispatch) => {
+  dispatch({ type: "FETCH_DATA_PENDING" });
+  delay(2000).then(() => {
+    return [
+      { name: "Bob", age: 40 },
+      { name: "Sue", age: 35 }
+    ];
+  }).then((data) => {
+    throw new Error("Ouch1!");
+    dispatch({ type: "FETCH_DATA_FULFILLED", payload: data });
+  }).catch((error) => {
+    dispatch({ type: "FETCH_DATA_REJECTED", payload: error, error: true });
+  });
+});
+
+// asynchronous action dispatching option #2 - requires redux-promise-middleware
+store.dispatch((dispatch) => {
+  dispatch({
+    type: "FETCH_DATA",
+    payload: delay(2000).then(() => {
+      throw new Error("Ouch2!");
+      return [
+        { name: "Bob", age: 40 },
+        { name: "Sue", age: 35 }
+      ];
+    })
+  }).catch(noop);
+});
 
 ReactDOM.render(<App />, document.getElementById("root"));

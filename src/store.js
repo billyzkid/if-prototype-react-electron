@@ -6,7 +6,19 @@ import * as reducers from "./reducers";
 
 const reducer = combineReducers(reducers);
 
-const initialState = {};
+const initialState = {
+  data: {
+    fetching: false,
+    fetched: false,
+    data: null,
+    error: null
+  },
+  user: {
+    name: "Will",
+    age: 41
+  },
+  tweets: ["#TrumpSucks"]
+};
 
 const errorHandler = (store) => (next) => (action) => {
   try {

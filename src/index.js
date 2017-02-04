@@ -8,9 +8,8 @@ import App from "./components/App";
 
 // synchronous action dispatching
 store.dispatch(changeUserName("Will"));
-store.dispatch(changeUserAge(41));
 store.dispatch(changeUserAge(42));
-store.dispatch(sendTweet("#TrumpSucks"));
+store.dispatch(sendTweet("#AlternativeFacts"));
 
 // asynchronous action dispatching (requires redux-thunk middleware)
 store.dispatch((dispatch) => {

@@ -32,7 +32,7 @@ let store;
 
 if (process.env.NODE_ENV !== "production") {
   const composeEnhancers = (typeof window !== "undefined" && window.__REDUX_DEVTOOLS_EXTENSION_COMPOSE__) ? window.__REDUX_DEVTOOLS_EXTENSION_COMPOSE__({ actionCreators }) : compose;
-  const enhancer = composeEnhancers(applyMiddleware(thunk, errorHandler, createLogger()));
+  const enhancer = composeEnhancers(applyMiddleware(thunk, errorHandler, createLogger({ collapsed: true })));
   store = createStore(reducer, initialState, enhancer);
 } else {
   const enhancer = compose(applyMiddleware(thunk, errorHandler));

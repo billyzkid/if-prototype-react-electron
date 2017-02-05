@@ -5,6 +5,9 @@ import "./App.css";
 
 class App extends PureComponent {
   static propTypes = {
+    fetching: PropTypes.bool,
+    name: PropTypes.string,
+    age: PropTypes.number,
     fetchData: PropTypes.func.isRequired,
     changeUserName: PropTypes.func.isRequired,
     changeUserAge: PropTypes.func.isRequired,
@@ -40,7 +43,9 @@ class App extends PureComponent {
     return (
       <div className="app">
         <div>
-          <button onClick={this.onClickFetchDataButton}>Fetch Data</button>
+          {this.props.fetching
+            ? <button disabled>Fetch Data</button>
+            : <button onClick={this.onClickFetchDataButton}>Fetch Data</button>}
         </div>
         <div>
           <label>User Name: <input ref="name" /></label>
@@ -60,18 +65,19 @@ class App extends PureComponent {
 }
 
 const mapStateToProps = (state, ownProps) => ({
+  fetching: state.data.fetching,
   name: state.user.name,
   age: state.user.age
 });
 
-const mapDispatchToProps = (dispatch, ownProps) => ({
-  fetchData: () => dispatch(fetchData()),
-  changeUserName: (name) => dispatch(changeUserName(name)),
-  changeUserAge: (age) => dispatch(changeUserAge(age)),
-  sendTweet: (tweet) => dispatch(sendTweet(tweet))
-});
+const actions = {
+  fetchData,
+  changeUserName,
+  changeUserAge,
+  sendTweet
+};
 
 export default connect(
   mapStateToProps,
-  mapDispatchToProps
+  actions
 )(App);

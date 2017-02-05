@@ -1,4 +1,5 @@
 export const actionTypes = {
+  fetchData: "FETCH_DATA",
   fetchDataPending: "FETCH_DATA_PENDING",
   fetchDataFulfilled: "FETCH_DATA_FULFILLED",
   fetchDataRejected: "FETCH_DATA_REJECTED",

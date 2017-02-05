@@ -1,4 +1,19 @@
 import { actionTypes } from "./constants";
+import { delay } from "./utilities";
+
+export function fetchData() {
+  return (dispatch) => {
+    dispatch(fetchDataPending());
+    delay(2000).then(() => {
+      dispatch(fetchDataFulfilled([
+        { name: "Bob", age: 40 },
+        { name: "Sue", age: 35 }
+      ]));
+    }).catch((error) => {
+      dispatch(fetchDataRejected(error));
+    });
+  };
+}
 
 export function fetchDataPending() {
   return { type: actionTypes.fetchDataPending };

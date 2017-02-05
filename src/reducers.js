@@ -31,6 +31,7 @@ const initialUserState = {
 export function user(state = initialUserState, action) {
   switch (action.type) {
     case actionTypes.changeUserName:
+
       return { ...state, name: action.name };
 
     case actionTypes.changeUserAge:

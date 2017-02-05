@@ -48,11 +48,11 @@ class App extends PureComponent {
             : <button onClick={this.onClickFetchDataButton}>Fetch Data</button>}
         </div>
         <div>
-          <label>User Name: <input ref="name" /></label>
+          <label>User Name: <input ref="name" defaultValue={this.props.name} /></label>
           <button onClick={this.onClickChangeUserNameButton}>Change</button>
         </div>
         <div>
-          <label>User Age: <input ref="age" /></label>
+          <label>User Age: <input ref="age" defaultValue={this.props.age} /></label>
           <button onClick={this.onClickChangeUserAgeButton}>Change</button>
         </div>
         <div>
